@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>UPI Pay</title><link rel="stylesheet" href="/style.css"></head>
+<body><div id="app">
+<header><div class="brand"><span class="logo">U</span><div><b>UPI Pay</b><small id="upi"></small></div></div><button class="avatar" id="avatar">U</button></header>
+<main>
+<section class="hero"><div class="eyebrow">AVAILABLE BALANCE</div><div class="balance" id="balance">₹0.00</div><div class="upi-chip" id="upiChip">UPI ID loading…</div><div class="hero-actions"><button onclick="openModal('add')">＋ Add Money</button><button class="light" onclick="show('transactions')">Transactions</button></div></section>
+<section class="quick"><button onclick="openModal('pay')"><i>↗</i><span>Send Money</span></button><button onclick="openModal('request')"><i>↓</i><span>Request</span></button><button onclick="openModal('scan')"><i>⌁</i><span>Scan QR</span></button><button onclick="openModal('bank')"><i>⌁</i><span>Bank</span></button></section>
+<section class="card"><div class="section-title"><b>Recharge &amp; Pay Bills</b><a>View all</a></div><div class="bill-grid"><button>📱<span>Mobile</span></button><button>💡<span>Electricity</span></button><button>📺<span>DTH</span></button><button>🌐<span>Broadband</span></button></div></section>
+<section class="card"><div class="section-title"><b>Recent activity</b><a onclick="show('transactions')">See all</a></div><div id="recent"></div></section>
+<section class="promo"><div><b>Pay smarter with UPI Pay</b><p>Fast, simple and secure digital payments.</p></div><span>✦</span></section>
+</main>
+<nav><button class="active" onclick="show('home')">⌂<span>Home</span></button><button onclick="openModal('scan')">⌁<span>Scan</span></button><button onclick="show('transactions')">◷<span>History</span></button><button onclick="show('profile')">◉<span>Profile</span></button></nav>
+</div>
+<div id="modal" class="modal hidden"><div class="sheet"><button class="close" onclick="closeModal()">×</button><div id="modalContent"></div></div></div>
+<script src="/app.js"></script></body></html>

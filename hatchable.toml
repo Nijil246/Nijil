@@ -1,0 +1,6 @@
+name = "UPI Pay"
+
+[auth]
+enabled = true
+providers = ["email"]
+signup = "open"

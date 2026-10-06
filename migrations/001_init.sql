@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS wallets (
+  user_id TEXT PRIMARY KEY,
+  balance_paise BIGINT NOT NULL DEFAULT 0,
+  upi_id TEXT UNIQUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+)
