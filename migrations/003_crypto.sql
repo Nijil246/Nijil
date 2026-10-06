@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS crypto_wallets (
+  user_id TEXT PRIMARY KEY,
+  network TEXT NOT NULL DEFAULT 'TRC20',
+  address TEXT UNIQUE NOT NULL,
+  balance_usdt NUMERIC(24,6) NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+)
