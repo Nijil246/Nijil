@@ -20,3 +20,11 @@ write = "own"
 [db.tables.transactions]
 read = "own"
 write = "own"
+
+[db.tables.usdt_bank_accounts]
+read = "own"
+write = "own"
+
+[db.tables.usdt_withdrawals]
+read = "own"
+write = "own"
