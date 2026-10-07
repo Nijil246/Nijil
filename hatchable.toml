@@ -4,3 +4,19 @@ name = "UPI Pay"
 enabled = true
 providers = ["email"]
 signup = "open"
+
+[db.tables.crypto_wallets]
+read = "own"
+write = "own"
+
+[db.tables.crypto_transactions]
+read = "own"
+write = "own"
+
+[db.tables.wallets]
+read = "own"
+write = "own"
+
+[db.tables.transactions]
+read = "own"
+write = "own"

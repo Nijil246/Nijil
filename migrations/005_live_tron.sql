@@ -1,0 +1,2 @@
+ALTER TABLE crypto_wallets ALTER COLUMN address DROP NOT NULL;
+ALTER TABLE crypto_wallets ALTER COLUMN address DROP DEFAULT;
