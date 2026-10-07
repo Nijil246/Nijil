@@ -28,3 +28,9 @@ write = "own"
 [db.tables.usdt_withdrawals]
 read = "own"
 write = "own"
+
+[[secret]]
+name = "XFLOW_SECRET_KEY"
+
+[[secret]]
+name = "XFLOW_ACCOUNT_ID"
