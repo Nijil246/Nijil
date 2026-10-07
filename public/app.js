@@ -54,6 +54,36 @@ async function connectTronWallet(){
     if(!address) throw Error("TRON wallet address was not available.");
     await api("/api/crypto-connect",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({address})});
     await load();
+
+const originalOpenModal=openModal;
+function openModal(type){
+  if(type==="receive"){
+    const c='<h2>Receive Payments</h2><p>Your personal QR is unique to this account. UPI QR receives INR; USDT QR receives TRC20 USDT.</p><div class="qr-tabs"><button class="primary" onclick="showReceiveQR(\'upi\')">UPI QR</button><button class="secondary" onclick="showReceiveQR(\'usdt\')">USDT QR</button></div><div id="receiveQr" class="qr-wrap"></div><div id="receiveText" class="qr-text"></div><button class="primary" onclick="copyReceive()">Copy payment address</button><small class="qr-note">No private key is included in the QR.</small>';
+    $("modalContent").innerHTML=c;$("modal").classList.remove("hidden");showReceiveQR("upi");return;
+  }
+  if(type==="virtual-card"){
+    const c='<h2>USDT Virtual Debit Card</h2><div class="virtual-card"><div><b>UPI PAY</b><span>USDT</span></div><strong>•••• •••• •••• ••••</strong><small>VIRTUAL CARD · NOT ACTIVE</small><div><span>VALID THRU — —</span><span>•••</span></div></div><p>Spend your USDT balance through a card network once an approved issuer/program is connected.</p><div id="cardStatus" class="provider-note">Checking card program status…</div><button class="primary" onclick="requestVirtualCard()">Request Virtual Card</button><small class="qr-note">Real card credentials are issued only by the approved card issuer. UPI Pay does not generate fake PAN/CVV details.</small>';
+    $("modalContent").innerHTML=c;$("modal").classList.remove("hidden");loadCardStatus();return;
+  }
+  return originalOpenModal(type);
+}
+function showReceiveQR(kind){
+  const box=$("receiveQr");if(!box)return;box.innerHTML="";
+  let payload="",display="";
+  if(kind==="upi"){
+    payload="upi://pay?pa="+encodeURIComponent(me.wallet.upi_id)+"&pn="+encodeURIComponent(me.user.name||"UPI Pay")+"&cu=INR";
+    display=me.wallet.upi_id;
+  }else{
+    if(!crypto?.wallet?.address){alert("Connect your TRON wallet first.");return;}
+    payload="tron:TRC20/"+crypto.wallet.address+"?token=USDT";
+    display=crypto.wallet.address;
+  }
+  new QRCode(box,{text:payload,width:210,height:210,correctLevel:QRCode.CorrectLevel.M});
+  $("receiveText").textContent=display;$("receiveText").dataset.value=display;
+}
+async function copyReceive(){const v=$("receiveText")?.dataset.value;if(v){await navigator.clipboard?.writeText(v);alert("Payment address copied.")}}
+async function loadCardStatus(){try{const r=await api("/api/virtual-card");if($("cardStatus"))$("cardStatus").textContent=r.card?"Status: "+r.card.status+". "+r.message:r.message}catch(e){if($("cardStatus"))$("cardStatus").textContent=e.message}}
+async function requestVirtualCard(){try{const r=await api("/api/virtual-card",{method:"POST"});if($("cardStatus"))$("cardStatus").textContent=r.message+" Status: "+r.card.status;alert(r.message)}catch(e){alert(e.message)}}
     alert("TRON wallet connected: "+address);
   }catch(e){alert(e.message)}
 }
