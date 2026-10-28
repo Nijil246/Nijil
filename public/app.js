@@ -55,6 +55,8 @@ async function connectTronWallet(){
     await api("/api/crypto-connect",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({address})});
     await load();
 
+load();
+
 const originalOpenModal=openModal;
 function openModal(type){
   if(type==="receive"){
@@ -90,6 +92,7 @@ async function requestVirtualCard(){try{const r=await api("/api/virtual-card",{m
 
 function openModal(type){
   let c="";
+  if(type.startsWith("bill-")){const kind=({"bill-mobile":"Mobile","bill-electricity":"Electricity","bill-dth":"DTH","bill-broadband":"Broadband"})[type]||"Mobile";c='<h2>Pay '+kind+' Bill</h2><p>Choose INR wallet or USDT. USDT settlement requires a connected payment partner.</p><div class="field"><label>Bill provider</label><input id="billProvider" placeholder="e.g. provider name"></div><div class="field"><label>Mobile number / Consumer ID / Customer reference</label><input id="billReference" placeholder="Enter account reference"></div><div class="field"><label>Bill amount (INR)</label><input id="billAmount" type="number" min="1" step="0.01" placeholder="₹ 0.00"></div><div class="field"><label>Pay using</label><select id="billMethod"><option value="USDT">USDT (TRC20)</option><option value="INR">INR wallet</option></select></div><button class="primary" onclick="submitBillRequest(\''+kind+'\')">Continue</button><div class="provider-note">This saves a bill-payment request only. No funds are deducted and the bill is not marked paid until a biller and settlement provider confirm payment.</div>';$("modalContent").innerHTML=c;$("modal").classList.remove("hidden");return;}
   if(type==="wallet")c='<h2>Unified Wallet</h2><p>INR stays in the app wallet. USDT is now linked to your real TRON wallet.</p><div class="asset-row"><div class="asset-icon inr">₹</div><div class="asset-main"><b>INR / UPI</b><small>'+esc(me?.wallet?.upi_id||"")+'</small></div><strong>'+money(me?.wallet?.balance_paise||0)+'</strong></div><div class="asset-row"><div class="asset-icon usdt-icon">₮</div><div class="asset-main"><b>USDT</b><small>TRC20 · live blockchain balance</small></div><strong>'+Number(crypto?.wallet?.balance_usdt||0).toFixed(6)+'</strong></div><button class="primary" onclick="connectTronWallet()">'+(crypto?.wallet?.address?"Reconnect TRON Wallet":"Connect TRON Wallet")+'</button>';
   if(type==="usdt-send")c='<h2>Send USDT</h2><p>Live TRC20 transfer. Your connected TRON wallet signs the transaction; UPI Pay never receives your private key.</p><div class="field"><label>Network</label><input value="TRC20 · TRON Mainnet" disabled></div><div class="field"><label>USDT wallet address</label><input id="cryptoTo" placeholder="T... recipient address"></div><div class="field"><label>Amount</label><input id="cryptoAmt" type="number" min="0.000001" step="0.000001" placeholder="0.000000"></div><button class="primary" onclick="sendUsdt()">Sign &amp; Send USDT</button>';
   if(type==="usdt-cashout")c='<h2>USDT → INR → Bank</h2><p>Convert your live TRC20 USDT balance to INR and request a bank payout.</p><div class="field"><label>USDT amount</label><input id="cashAmt" type="number" min="0.000001" step="0.000001" placeholder="0.000000" oninput="refreshQuote()"></div><div id="quoteBox" class="quote-box">Enter an amount to see the INR quote.</div><div id="bankBox"></div><button class="primary" onclick="submitCashout()">Request bank payout</button><div class="provider-note">Bank transfer is pending compliant payout-provider integration. No transfer is marked complete until the provider confirms it.</div>';
@@ -158,5 +161,7 @@ async function sendUsdt(){
     closeModal();await load();alert("USDT sent. TX: "+txid);
   }catch(e){alert(e.message||"Blockchain transfer failed.")}
 }
+
+async function submitBillRequest(billType){try{const provider_name=$("billProvider").value.trim(),customer_reference=$("billReference").value.trim(),amount_inr=Number($("billAmount").value),payment_method=$("billMethod").value;if(!provider_name||!customer_reference||!Number.isFinite(amount_inr)||amount_inr<=0)return alert("Enter the bill provider, account reference, and a valid INR amount.");const r=await api("/api/bill-payments",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({bill_type:billType,provider_name,customer_reference,amount_inr,payment_method})});alert(r.message+"\nRequest status: "+r.request.status);closeModal();}catch(e){alert(e.message)}}
 
 load();
