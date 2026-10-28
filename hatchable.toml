@@ -1,4 +1,4 @@
-name = "UPI Pay"
+name = "NEXGPAY"
 
 [auth]
 enabled = true
@@ -34,3 +34,11 @@ name = "XFLOW_SECRET_KEY"
 
 [[secret]]
 name = "XFLOW_ACCOUNT_ID"
+
+[db.tables.bill_payment_requests]
+read = "own"
+write = "own"
+
+[db.tables.virtual_cards]
+read = "own"
+write = "own"

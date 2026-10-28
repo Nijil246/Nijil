@@ -36,7 +36,7 @@ function renderRecent(){
 function txn(t){
   let out=t.type==="PAYMENT"||t.type==="SEND";
   let amt=t.crypto?Number(t.amount_usdt).toFixed(6)+" USDT":money(t.amount_paise);
-  return '<div class="txn"><div class="txicon">'+(t.crypto?"₮":(out?"↗":"＋"))+'</div><div class="txmain"><b>'+esc(t.counterparty||"UPI Pay")+'</b><small>'+esc(t.note||t.type)+" · "+new Date(t.created_at).toLocaleDateString("en-IN")+'</small></div><div class="txamt '+(out?"out":"in")+'">'+(out?"−":"+")+amt+"</div></div>"
+  return '<div class="txn"><div class="txicon">'+(t.crypto?"₮":(out?"↗":"＋"))+'</div><div class="txmain"><b>'+esc(t.counterparty||"NEXGPAY")+'</b><small>'+esc(t.note||t.type)+" · "+new Date(t.created_at).toLocaleDateString("en-IN")+'</small></div><div class="txamt '+(out?"out":"in")+'">'+(out?"−":"+")+amt+"</div></div>"
 }
 
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -46,7 +46,7 @@ function closeModal(){$("modal").classList.add("hidden")}
 async function connectTronWallet(){
   try{
     if(!window.tronLink){
-      alert("Open UPI Pay inside the TronLink wallet browser, or install TronLink on your device.");
+      alert("Open NEXGPAY inside the TronLink wallet browser, or install TronLink on your device.");
       return;
     }
     await window.tronLink.request({method:"tron_requestAccounts"});
@@ -64,7 +64,7 @@ function openModal(type){
     $("modalContent").innerHTML=c;$("modal").classList.remove("hidden");showReceiveQR("upi");return;
   }
   if(type==="virtual-card"){
-    const c='<h2>USDT Virtual Debit Card</h2><div class="virtual-card"><div><b>UPI PAY</b><span>USDT</span></div><strong>•••• •••• •••• ••••</strong><small>VIRTUAL CARD · NOT ACTIVE</small><div><span>VALID THRU — —</span><span>•••</span></div></div><p>Spend your USDT balance through a card network once an approved issuer/program is connected.</p><div id="cardStatus" class="provider-note">Checking card program status…</div><button class="primary" onclick="requestVirtualCard()">Request Virtual Card</button><small class="qr-note">Real card credentials are issued only by the approved card issuer. UPI Pay does not generate fake PAN/CVV details.</small>';
+    const c='<h2>USDT Virtual Debit Card</h2><div class="virtual-card"><div><b>NEXGPAY</b><span>USDT</span></div><strong>•••• •••• •••• ••••</strong><small>VIRTUAL CARD · NOT ACTIVE</small><div><span>VALID THRU — —</span><span>•••</span></div></div><p>Spend your USDT balance through a card network once an approved issuer/program is connected.</p><div id="cardStatus" class="provider-note">Checking card program status…</div><button class="primary" onclick="requestVirtualCard()">Request Virtual Card</button><small class="qr-note">Real card credentials are issued only by the approved card issuer. NEXGPAY does not generate fake PAN/CVV details.</small>';
     $("modalContent").innerHTML=c;$("modal").classList.remove("hidden");loadCardStatus();return;
   }
   return originalOpenModal(type);
@@ -148,7 +148,7 @@ async function submitCashout(){
 async function sendUsdt(){
   try{
     if(!crypto?.wallet?.address) return alert("Connect your TRON wallet first.");
-    if(!window.tronWeb) return alert("Open UPI Pay inside TronLink to send live USDT.");
+    if(!window.tronWeb) return alert("Open NEXGPAY inside TronLink to send live USDT.");
     const to=$("cryptoTo").value.trim(), amount=Number($("cryptoAmt").value);
     if(!/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(to)) return alert("Enter a valid TRON mainnet address.");
     if(!Number.isFinite(amount)||amount<=0) return alert("Enter a valid USDT amount.");
